@@ -5,6 +5,7 @@ fn main() {
     let root = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
     let manifold_src = root.join("../../third_party/manifold");
     let target_env = std::env::var("CARGO_CFG_TARGET_ENV").unwrap_or_default();
+    let target_os = std::env::var("CARGO_CFG_TARGET_OS").unwrap_or_default();
     let mut cfg = cmake::Config::new(root.join("csrc"));
     cfg.define("MANIFOLD_SRC", manifold_src.to_str().unwrap().replace('\\', "/"))
         // Manifold is unusably slow in Debug; always build it optimised.
@@ -34,5 +35,8 @@ fn main() {
     println!("cargo:rustc-link-search=native={}", dst.join("lib").display());
     println!("cargo:rustc-link-lib=static=s3d_manifold");
     println!("cargo:rustc-link-lib=static=manifold");
+    if target_os == "macos" {
+        println!("cargo:rustc-link-lib=c++");
+    }
     println!("cargo:rerun-if-changed=csrc");
 }
