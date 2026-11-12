@@ -13,6 +13,8 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Build release binary
+        env:
+          CMAKE: cmake
         run: cargo build --release
 
       - name: Upload macOS binary
